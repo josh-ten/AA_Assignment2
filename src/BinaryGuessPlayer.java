@@ -7,7 +7,7 @@ import java.io.*;
  * You may implement/extend other interfaces or classes, but ensure ultimately
  * that this class implements the Player interface (directly or indirectly).
  */
-public class BinaryGuessPlayer implements Player
+public class BinaryGuessPlayer extends PlayerImpl implements Player
 {
 
     /**
@@ -21,10 +21,8 @@ public class BinaryGuessPlayer implements Player
      *    the "throws IOException" method specification, but make sure your
      *    implementation exits gracefully if an IOException is thrown.
      */
-    public BinaryGuessPlayer(String gameFilename, String chosenName)
-        throws IOException
-    {
-
+    public BinaryGuessPlayer(String gameFilename, String chosenName) throws IOException {
+    	super(gameFilename, chosenName);
     } // end of BinaryGuessPlayer()
 
 
