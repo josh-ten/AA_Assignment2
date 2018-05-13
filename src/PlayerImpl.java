@@ -8,12 +8,20 @@ public class PlayerImpl {
 
 	protected Character chosenCharacter;
 	protected ArrayList<Character> characters;
+	protected ArrayList<Character> candidates;
 	protected ArrayList<Attribute> allAttributes;
+	protected ArrayList<String> attributesCorrectlyGuessed;
+	
 	
 	public PlayerImpl(String gameFilename, String chosenName) {
 		characters = new ArrayList<Character>();
     	allAttributes = new ArrayList<Attribute>();
-        loadConfig(gameFilename, chosenName);
+    	candidates = new ArrayList<Character>();
+    	attributesCorrectlyGuessed = new ArrayList<String>();
+        
+    	loadConfig(gameFilename, chosenName);
+        candidates.addAll(characters);
+
         for (Character c: characters) {
 			if (c.compareTo(chosenName) == 0) {
 				chosenCharacter = c.clone();
@@ -22,6 +30,7 @@ public class PlayerImpl {
         }
         if (chosenCharacter == null)
         	System.err.println("Could not find character: " + chosenName);
+        
         System.out.println("Character: " + chosenCharacter.getName() + '\n');
 	}
 	

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -10,8 +11,6 @@ import java.util.Random;
  */
 public class RandomGuessPlayer extends PlayerImpl implements Player
 {
-	PossibleCharacter possibleChar = null;
-	
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
      * person.
@@ -25,36 +24,32 @@ public class RandomGuessPlayer extends PlayerImpl implements Player
      */
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
     	super(gameFilename, chosenName);
-    	possibleChar = new PossibleCharacter(allAttributes);
     } // end of RandomGuessPlayer()
 
 
     public Guess guess() {
-    	Random rand = new Random();
-    	//Choose a random person
-    	int randInd = rand.nextInt(characters.size());
-    	Character randChar = characters.get(randInd);
-    	//Choose a random attribute
-    	randInd = rand.nextInt(possibleChar.attributes.size());
-    	Attribute randAttr = possibleChar.attributes.get(randInd);
-    	//Choose from the list of available values
+    	Guess guess = null;
+    	if (candidates.size() > 1) {
+			Random rand = new Random();
+			//Choose a random person
+			int randInd = rand.nextInt(candidates.size());
+			Character randChar = candidates.get(randInd);
+			//Choose a random attribute that is not yet known
+			Attribute randAttr = null;
+			do {
+				randInd = rand.nextInt(randChar.attributes.size());
+				randAttr = randChar.attributes.get(randInd);
+			} while (attributesCorrectlyGuessed.contains(randAttr.getName()));
+			//Get the value for this attribute
+			String val = randAttr.getValue();
+			
+			guess = new Guess(Guess.GuessType.Attribute, randAttr.getName(), val);
+    	} else if (candidates.size() == 1) { 
+    		//Narrowed it down to 1
+    		guess = new Guess(Guess.GuessType.Person, "", candidates.get(0).getName());
+    	}
     	
-    	
-    	
-//    	//Make sure the value hasn't already been guessed
-//    	do {
-//    		randInd = rand.nextInt(randAttr.possibleValues.size());    		
-//    	} while (randAttr.ruledOut.get(randInd) == true);
-//    	
-//    	String randVal = randAttr.possibleValues.get(randInd);
-//    	Guess randGuess = new Guess(
-//    			Guess.GuessType.Attribute,
-//    			randAttr.getName(),
-//    			randVal);
-//    	
-//    	return randGuess;
-        return new Guess(Guess.GuessType.Person, "", null);
-    	
+		return guess;
     } // end of guess()
 
 
@@ -70,19 +65,23 @@ public class RandomGuessPlayer extends PlayerImpl implements Player
 
 
 	public boolean receiveAnswer(Guess currGuess, boolean answer) {
-		if (!answer) {
+		String attribute = currGuess.getAttribute();
+		String value = currGuess.getValue();
+		boolean personGuess = currGuess.getType() == Guess.GuessType.Person;
+		if (answer) {
+			attributesCorrectlyGuessed.add(attribute);
+		}
+		else {
 			//If the guess was wrong, keep track of that
-			Attribute attribute = chosenCharacter.getAttribute(currGuess.getAttribute());
-			for (int i = 0; i < attribute.possibleValues.size(); i++) {
-				String value = attribute.possibleValues.get(i);
-				if (currGuess.getValue().compareTo(value) == 0) {
-					attribute.ruledOut.set(i, true);
-					break;
+			ArrayList<Character> toRemove = new ArrayList<Character>();
+			for (Character c: candidates) {
+				if (c.hasAttributeValue(attribute, value)) {
+					toRemove.add(c);
 				}
 			}
-//			System.out.println(attribute.ruledOut);
+			candidates.removeAll(toRemove);
 		}
-        return (answer && currGuess.getType() == Guess.GuessType.Person);
+        return (answer && personGuess);
     } // end of receiveAnswer()
 	
 

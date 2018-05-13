@@ -7,7 +7,7 @@ import java.util.ArrayList;
  *
  */
 public class Character implements Comparable<Character> {
-	private ArrayList<Attribute> attributes;
+	public ArrayList<Attribute> attributes;
 	private String name;
 
 	public Character() {

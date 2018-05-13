@@ -4,12 +4,10 @@ public class Attribute implements Comparable<Attribute> {
 	private String name;
 	private String value;
 	public ArrayList<String> possibleValues;
-	public ArrayList<Boolean> ruledOut;
 	
 	public Attribute(String name) {
 		this.name = name;
 		possibleValues = new ArrayList<String>();
-		ruledOut = new ArrayList<Boolean>();
 	}
 	
 	public boolean addValue(String value) {
@@ -17,7 +15,6 @@ public class Attribute implements Comparable<Attribute> {
 			if (v.compareTo(value) == 0) return false;
 		}
 		possibleValues.add(value);
-		ruledOut.add(false);
 		return true;
 	}
 	
