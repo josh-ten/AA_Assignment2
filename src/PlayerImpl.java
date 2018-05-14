@@ -12,13 +12,12 @@ public class PlayerImpl {
 	protected ArrayList<Attribute> allAttributes;
 	protected ArrayList<String> attributesCorrectlyGuessed;
 	
-	
 	public PlayerImpl(String gameFilename, String chosenName) {
 		characters = new ArrayList<Character>();
     	allAttributes = new ArrayList<Attribute>();
     	candidates = new ArrayList<Character>();
     	attributesCorrectlyGuessed = new ArrayList<String>();
-        
+    	
     	loadConfig(gameFilename, chosenName);
         candidates.addAll(characters);
 

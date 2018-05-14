@@ -1,5 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javafx.util.Pair;
 
 /**
  * Binary-search based guessing player.
@@ -28,30 +31,46 @@ public class BinaryGuessPlayer extends PlayerImpl implements Player
 
     public Guess guess() {
     	Guess guess = null;
+
     	if (candidates.size() > 1) {
-    		//Find the frequency of each attribute value pair double up
-    		ArrayList<ArrayList<Integer>> freqs = new ArrayList<ArrayList<Integer>>();
-    		for (Character c: candidates) {
-    			for (Attribute a: c.attributes) {
-    				//Find the attribute in allAttributes
-    				
-    			}
+    	    ArrayList<Attribute> candidateAttr = new ArrayList<Attribute>();
+    	    //Create a list of all the attribute value pairs of the candidates
+    	    for (Character c: candidates) {
+    	        candidateAttr.addAll(c.attributes);
+    	    }
+    	    //Find the frequency of each attribute value pair
+    	    ArrayList<String> labels = new ArrayList<String>();
+    	    ArrayList<Integer> freqs = new ArrayList<Integer>();
+    	    for (Attribute a: candidateAttr) {
+    	        boolean exists = false;
+    	        for (int i = 0; i < labels.size(); i++) {
+    	            if (labels.get(i).equals(a.getName() + " " + a.getValue())) { //Already exists
+    	                exists = true;
+    	                int oldVal = freqs.get(i);
+    	                freqs.set(i, oldVal+1);
+    	                break;
+    	            }
+    	        }
+    	        if (!(exists || attributesCorrectlyGuessed.contains(a.getName()))) { //Adding a new one 
+	                labels.add(a.getName() + " " + a.getValue());
+	                freqs.add(1);
+    	        }
+    	    }
+    	    
+    		//Find the most common attribute value pair
+    	    int max = 0;
+    	    int maxIndex = -1;
+    		for (int i = 0; i < freqs.size(); i++) {
+    		    if (freqs.get(i) > max) {
+    		        max = freqs.get(i);
+    		        maxIndex = i;
+    		    }
     		}
-    		for (int i = 0; i < freqs.size(); i++)
-    			System.out.println(freqs.get(i));
-			//Choose a random person
-//			int randInd = rand.nextInt(candidates.size());
-//			Character randChar = candidates.get(randInd);
-//			//Choose a random attribute that is not yet known
-//			Attribute randAttr = null;
-//			do {
-//				randInd = rand.nextInt(randChar.attributes.size());
-//				randAttr = randChar.attributes.get(randInd);
-//			} while (attributesCorrectlyGuessed.contains(randAttr.getName()));
-//			//Get the value for this attribute
-//			String val = randAttr.getValue();
-//			
-//			guess = new Guess(Guess.GuessType.Attribute, randAttr.getName(), val);
+    		String[] MCA = labels.get(maxIndex).split(" "); //Most common attribute
+    		String guessAttr = MCA[0];
+    		String guessVal = MCA[1];
+			
+			guess = new Guess(Guess.GuessType.Attribute, guessAttr, guessVal);
     	} else if (candidates.size() == 1) { 
     		//Narrowed it down to 1
     		guess = new Guess(Guess.GuessType.Person, "", candidates.get(0).getName());
@@ -76,18 +95,23 @@ public class BinaryGuessPlayer extends PlayerImpl implements Player
 		String attribute = currGuess.getAttribute();
 		String value = currGuess.getValue();
 		boolean personGuess = currGuess.getType() == Guess.GuessType.Person;
-		if (answer) {
-			attributesCorrectlyGuessed.add(attribute);
-		}
-		else {
-			//If the guess was wrong, keep track of that
-			ArrayList<Character> toRemove = new ArrayList<Character>();
-			for (Character c: candidates) {
-				if (c.hasAttributeValue(attribute, value)) {
-					toRemove.add(c);
-				}
-			}
-			candidates.removeAll(toRemove);
+		if (!personGuess) {
+		    //update the list of candidates depending on the response
+		    ArrayList<Character> toRemove = new ArrayList<Character>();
+    		if (answer) {
+    		    attributesCorrectlyGuessed.add(attribute);
+    			for (Character c: candidates) {
+    				if (!c.hasAttributeValue(attribute, value)) {
+    					toRemove.add(c);
+    				}
+    			}
+    		} else {
+                for (Character c: candidates) {
+                    if (c.hasAttributeValue(attribute, value))
+                        toRemove.add(c);
+                }
+    		}
+    		candidates.removeAll(toRemove);
 		}
         return (answer && personGuess);
     } // end of receiveAnswer()
