@@ -9,7 +9,7 @@ import java.util.Random;
  * You may implement/extend other interfaces or classes, but ensure ultimately
  * that this class implements the Player interface (directly or indirectly).
  */
-public class RandomGuessPlayer extends SuperPlayer implements Player
+public class RandomGuessPlayer extends PlayerImpl implements Player
 {
     /**
      * Loads the game configuration from gameFilename, and also store the chosen

@@ -3,19 +3,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class SuperPlayer {
+public class PlayerImpl {
 
 	protected Character chosenCharacter;
 	protected ArrayList<Character> characters;
 	protected ArrayList<Character> candidates;
-	protected HashMap<Integer, Attribute> allAttributes;
+	protected ArrayList<Attribute> allAttributes;
 	protected ArrayList<String> attributesCorrectlyGuessed;
 	
-	public SuperPlayer(String gameFilename, String chosenName) {
+	public PlayerImpl(String gameFilename, String chosenName) {
 		characters = new ArrayList<Character>();
-    	allAttributes = new HashMap<Integer, Attribute>();
+    	allAttributes = new ArrayList<Attribute>();
     	candidates = new ArrayList<Character>();
     	attributesCorrectlyGuessed = new ArrayList<String>();
     	
@@ -35,7 +34,7 @@ public class SuperPlayer {
 	}
 	
 
-    private void loadConfig(String fileName, String chosenName) {
+	private void loadConfig(String fileName, String chosenName) {
 		String line = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
@@ -63,24 +62,16 @@ public class SuperPlayer {
             			continue;
             		}	
             		
-            		//Add the correct attributes to the character
+            		//Add all the attributes to the character
             		String newAttr = tokens[0];
             		String newValue = tokens[1];
-            		Attribute newAttribute = new Attribute(newAttr);
-            		int key = newAttribute.hashCode();
-            		newAttribute.setValue(newValue);
-            		Attribute attribute = allAttributes.get(key);
-        		    allAttributes.putIfAbsent(key, newAttribute);
-            		attribute.setValue(newAttribute.getValue());
-            		currCharacter.addAttribute(attribute);
-//            		for (Map.Entry a: allAttributes.entrySet()) {
-//            		    Attribute attr = (Attribute) a.getValue();
-//            			if (attr.compareTo(newAttr) == 0) {
-//        					attr.setValue(newValue);
-//        					currCharacter.addAttribute(attr);
-//        					break;
-//            			}
-//            		}
+            		for (Attribute a: allAttributes) {
+            			if (a.compareTo(newAttr) == 0) {
+        					a.setValue(newValue);
+        					currCharacter.addAttribute(a);
+        					break;
+            			}
+            		}
             	}
             }
 
@@ -101,7 +92,7 @@ public class SuperPlayer {
 		for (int i = 1; i < tokens.length; i++) {
 			attribute.addValue(tokens[i]);
 		}
-		allAttributes.put(attribute.hashCode(), attribute);
+		allAttributes.add(attribute);
 	}
 
 	
