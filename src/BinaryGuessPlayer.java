@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Binary-search based guessing player.
@@ -8,7 +10,7 @@ import java.util.ArrayList;
  * You may implement/extend other interfaces or classes, but ensure ultimately
  * that this class implements the Player interface (directly or indirectly).
  */
-public class BinaryGuessPlayer extends PlayerImpl implements Player
+public class BinaryGuessPlayer extends SuperPlayer implements Player
 {
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -30,16 +32,17 @@ public class BinaryGuessPlayer extends PlayerImpl implements Player
     	Guess guess = null;
 
     	if (candidates.size() > 1) {
-    	    ArrayList<Attribute> candidateAttr = new ArrayList<Attribute>();
+    	    HashMap<Integer, Attribute> candidateAttr = new HashMap<Integer, Attribute>();
     	    //Create a list of all the attribute value pairs of the candidates
     	    for (Character c: candidates) {
-    	        candidateAttr.addAll(c.attributes);
+    	        candidateAttr.putAll(c.attributes);
     	    }
     	    //Find the frequency of each attribute value pair
     	    ArrayList<String> labels = new ArrayList<String>();
     	    ArrayList<Integer> freqs = new ArrayList<Integer>();
-    	    for (Attribute a: candidateAttr) {
-    	        boolean exists = false;
+            for (Entry<Integer, Attribute> entry: candidateAttr.entrySet()) {
+                Attribute a = (Attribute) entry.getValue();    	        
+                boolean exists = false;
     	        for (int i = 0; i < labels.size(); i++) {
     	            if (labels.get(i).equals(a.getName() + " " + a.getValue())) { //Already exists
     	                exists = true;

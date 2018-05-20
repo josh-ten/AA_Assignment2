@@ -42,6 +42,18 @@ public class Attribute implements Comparable<Attribute> {
 		return clone;
 	}
 	
+//	@Override
+//    public int hashCode() {
+//        int hash = 1;
+//        hash *= 17 + name.hashCode();
+//        hash *= value == null ? 1 : 31 + value.hashCode();
+//        return hash;
+//    }
+	@Override
+	public int hashCode() {
+	    return name.hashCode();
+	}
+	
 	@Override
 	public int compareTo(Attribute other) {
 		return name.compareTo(other.name);
