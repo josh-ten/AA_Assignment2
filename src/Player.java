@@ -1,5 +1,3 @@
-import java.io.*;
-
 
 /**
  * Interface of a player in Guess Who game.

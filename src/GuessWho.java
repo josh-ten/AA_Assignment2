@@ -75,11 +75,16 @@ public class GuessWho
             if ((line = assignedReader.readLine()) != null) {
                 String[] fields = line.split(" ");
 			  	if (fields.length != 2) {
+			  	    assignedReader.close();
 				  	throw new IOException(assignedFilename + ": Misformed field line: " + line);
 			  	}
                 player1AssignedName = fields[0];
                 player2AssignedName = fields[1];
+                Random r = new Random();
+                player1AssignedName = "P" + (r.nextInt(9)+1);
+                player2AssignedName = "P" + (r.nextInt(9)+1);
             }
+            assignedReader.close();
 
             //
             // Construct each player.

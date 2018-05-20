@@ -1,8 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javafx.util.Pair;
 
 /**
  * Binary-search based guessing player.
@@ -57,16 +54,22 @@ public class BinaryGuessPlayer extends PlayerImpl implements Player
     	        }
     	    }
     	    
-    		//Find the most common attribute value pair
-    	    int max = 0;
-    	    int maxIndex = -1;
-    		for (int i = 0; i < freqs.size(); i++) {
-    		    if (freqs.get(i) > max) {
-    		        max = freqs.get(i);
-    		        maxIndex = i;
+    		//Find the median common attribute value pair
+    	    //so as to not ask a redundant question, halving the candidate list
+    	    int half = Math.round(candidates.size()/2);
+    	    int[] distFromHalf = new int[freqs.size()];
+    	    for (int i = 0; i < freqs.size(); i++) {
+    	        distFromHalf[i] = Math.abs(half - freqs.get(i));
+    	    }
+    	    int min = candidates.size();
+    	    int minIndex = -1;
+    		for (int i = 0; i < distFromHalf.length; i++) {
+    		    if (distFromHalf[i] < min) {
+    		        min = distFromHalf[i];
+    		        minIndex = i;
     		    }
     		}
-    		String[] MCA = labels.get(maxIndex).split(" "); //Most common attribute
+    		String[] MCA = labels.get(minIndex).split(" "); //Most common attribute
     		String guessAttr = MCA[0];
     		String guessVal = MCA[1];
 			
@@ -75,7 +78,6 @@ public class BinaryGuessPlayer extends PlayerImpl implements Player
     		//Narrowed it down to 1
     		guess = new Guess(Guess.GuessType.Person, "", candidates.get(0).getName());
     	}
-    	
 		return guess;
     } // end of guess()
 

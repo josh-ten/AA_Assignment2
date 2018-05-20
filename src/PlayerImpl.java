@@ -30,7 +30,7 @@ public class PlayerImpl {
         if (chosenCharacter == null)
         	System.err.println("Could not find character: " + chosenName);
         
-        System.out.println("Character: " + chosenCharacter.getName() + '\n');
+        System.out.println("Character: " + chosenCharacter.getName());
 	}
 	
 
