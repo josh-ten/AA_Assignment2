@@ -4,7 +4,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PlayerImpl {
+/**
+ * Stores the common code between binary and random guess players for loading files
+ * and populating the data structures
+ * @author Josh Ten
+ *
+ */
+public class PlayerFileLoader {
 
 	protected Character chosenCharacter;
 	protected ArrayList<Character> characters;
@@ -12,7 +18,7 @@ public class PlayerImpl {
 	protected ArrayList<Attribute> allAttributes;
 	protected ArrayList<String> attributesCorrectlyGuessed;
 	
-	public PlayerImpl(String gameFilename, String chosenName) {
+	public PlayerFileLoader(String gameFilename, String chosenName) {
 		characters = new ArrayList<Character>();
     	allAttributes = new ArrayList<Attribute>();
     	candidates = new ArrayList<Character>();
@@ -21,8 +27,9 @@ public class PlayerImpl {
     	loadConfig(gameFilename, chosenName);
         candidates.addAll(characters);
 
+        //Keep track of the chosen character 
         for (Character c: characters) {
-			if (c.compareTo(chosenName) == 0) {
+			if (c.equals(chosenName)) {
 				chosenCharacter = c.clone();
 				break;
 			}
@@ -33,12 +40,17 @@ public class PlayerImpl {
         System.out.println("Character: " + chosenCharacter.getName());
 	}
 	
-
+	/**
+	 * Load the config file
+	 * @param fileName config file
+	 * @param chosenName name of the chosen character
+	 */
 	private void loadConfig(String fileName, String chosenName) {
 		String line = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
             Character currCharacter = new Character();
+            //Keep track of the first segment of the config file where AV are defined
             boolean defineAttributes = true;
             while((line = bufferedReader.readLine()) != null) {
                 //Check for blank line
@@ -85,7 +97,11 @@ public class PlayerImpl {
         }
 	}
 
-	
+	/**
+	 * Take a string array of Atribute, value, value, value... and create 
+	 * an attribute instance of it
+	 * @param tokens array
+	 */
 	private void defineAttribute(String[] tokens) {
 		String attributeName = tokens[0];
 		Attribute attribute = new Attribute(attributeName);

@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Stores the name and value of attributes, as well as a list of all the possible
+ * values of the attribute, that other characters hold
+ * @author Josh Ten
+ *
+ */
 public class Attribute implements Comparable<Attribute> {
 	private String name;
 	private String value;
@@ -10,16 +16,24 @@ public class Attribute implements Comparable<Attribute> {
 		possibleValues = new ArrayList<String>();
 	}
 	
+	/**
+	 * Add a new value if it doesn't already exist
+	 * @param value
+	 * @return if the value was added
+	 */
 	public boolean addValue(String value) {
 		for (String v: possibleValues) {
-			if (v.compareTo(value) == 0) return false;
+			if (v.equals(value)) return false;
 		}
 		possibleValues.add(value);
 		return true;
 	}
-	
+
+	/**
+	 * Adds the value if it doesn't exist and sets it as the value
+	 * @param newValue
+	 */
 	public void setValue(String newValue) {
-		//Adds the value if it doesn't already exist
 		addValue(newValue);
 		value = newValue;
 	}

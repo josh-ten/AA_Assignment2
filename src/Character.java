@@ -36,6 +36,9 @@ public class Character implements Comparable<Character> {
 	public int compareTo(String otherName) {
 		return name.compareTo(otherName);
 	}
+	public boolean equals(String otherName) {
+	    return name.compareTo(otherName) == 0;
+	}
 	
 	public Character clone() {
 		Character clone = new Character();
@@ -46,6 +49,11 @@ public class Character implements Comparable<Character> {
 		return clone;
 	}
 
+	/**
+	 * 
+	 * @param name of the attribute
+	 * @return attribute instance
+	 */
 	public Attribute getAttribute(String name) {
 		for (Attribute a: attributes) {
 			if (a.compareTo(name) == 0) return a;
